@@ -2,18 +2,59 @@
 <html>
     <head>
         <script src="jquery.js"></script>
-        <script src="script.js"></script>
+        <script src="popscript.js"></script>
         <link href="font-awesome.min.css" rel="stylesheet">
         <style>
-            body {width:500px;}
+            body {
+                width:300px;
+                min-height:100px;
+                font-size:14px;
+                font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                color: #222222;
+            }
+            h1 {
+                font-family:Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size:20px;
+                font-weight:normal;
+                margin: 5px 0px
+            }
+            ul li {
+                list-style-type: circle;
+            }
+            ul li:hover{
+                list-style-type: square;
+            }
+            ul {
+                padding-left: 1.5em;
+                margin-top: 0em;
+                max-height:400px;
+                overflow-y:auto;
+                overflow-x:hidden;
+            }
+            a {
+                color: #0088cc;
+                text-decoration: none;
+                display:block;
+                white-space:nowrap;
+            }
+            a:hover{
+                text-decoration: underline;
+            }
         </style>
+        <base href="http://ukofequestria.co.uk/"/>
     </head>
     <body>
-        <strong><i class="fa fa-envelope"></i> Conversations</strong>
-        <ul class="conversations fa-ul"></ul>
-        <strong><i class="fa fa-bell"></i> Alerts</strong>
-        <ul class="alerts fa-ul"></ul>
-        <strong><i class="fa fa-eye"></i> Watched Threads</strong>
-        <ul class="watched fa-ul"></ul>
+        <section id="conversations">
+            <h1><i class="fa fa-envelope"></i> Conversations</h1>
+            <ul></ul>
+        </section>
+        <section id="alerts">
+            <h1><i class="fa fa-bell"></i> Alerts</h1>
+            <ul></ul>
+        </section>
+        <section id="watched">
+            <h1><i class="fa fa-eye"></i> Watched Threads</h1>
+            <ul></ul>
+        </section>
     </body>
 </html>

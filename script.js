@@ -25,23 +25,21 @@ function processCount(n){
 }
 
 function addThread(section,title,link){
-    $(section).append(
+    $(section+" ul").append(
         $("<li>").append( $("<a>").text(title).attr("href",link))
     )
 }
 
-function checkThreadList(url,page,section){
+function checkThreadList(url,page,addFunc){
     processing += 1;
     xfRequestPage(url,{"page":page},function(data,err){
         if (!err){
-            if (section){
-                data.find(".unread.discussionListItem,.primaryContent.new").each(function(){
-                    addThread(section,$(this).find(".title a").text(),$(this).find(".title a").attr("href"));
-                });
-            }
+            data.find(".unread.discussionListItem,.primaryContent.new").each(function(){
+                addFunc($(this))
+            });
             var amount = data.find(".unread.discussionListItem,.primaryContent.new").length;
             if (amount >= 20 && page != 0){
-                checkThreadList(url,page+1,section);
+                checkThreadList(url,page+1,addFunc);
             }
             console.log(url,page,amount)
             processCount(amount);
@@ -51,26 +49,68 @@ function checkThreadList(url,page,section){
     });
 }
 
-function checkConversations(countOnly){
-    if (!countOnly){$(".conversations").empty();}
-    checkThreadList("http://ukofequestria.co.uk/conversations",1,countOnly?false:".conversations");
+function checkConversations(){
+    $("#conversations ul").empty();
+    $("#conversations").addClass("nothing")
+    checkThreadList("http://ukofequestria.co.uk/conversations",1,function(elem){
+        var e = elem.find(".title a");
+        e.find(".prefix").remove()
+        $("#conversations ul").append($("<li>").append(
+            e.attr("class","").attr("target","_blank").attr("title",e.text())
+        ))
+    });
 }
-function checkAlerts(countOnly){
-    if (!countOnly){$(".alerts").empty();}
-    checkThreadList("http://ukofequestria.co.uk/account/alerts",1,countOnly?false:".alerts");
+function checkAlerts(c){
+    $("#alerts ul").empty();
+    $("#alerts").addClass("nothing")
+    checkThreadList("http://ukofequestria.co.uk/account/alerts",1,function(elem){
+        var e = elem.find(".PopupItemLink")
+        $("#alerts ul").append($("<li>").append(
+            e.attr("class","").attr("target","_blank").attr("title",e.text())
+        ))
+    });
 }
-function checkWatched(countOnly){
-    if (!countOnly){$(".watched").empty();}
-    checkThreadList("http://ukofequestria.co.uk/watched/threads",0,countOnly?false:".watched");
+function checkWatched(){
+    $("#watched ul").empty();
+    $("#watched").addClass("nothing")
+    checkThreadList("http://ukofequestria.co.uk/watched/threads",0,function(elem){
+        var e = elem.find(".PreviewTooltip")
+        $("#watched ul").append($("<li>").append(
+            e.attr("class","").attr("target","_blank").attr("title",e.text())
+        ))
+    });
 }
 
-function checkAll(countOnly){
+function checkAll(){
     processing = 0;
     count = 0;
-    checkConversations(countOnly);
-    checkAlerts(countOnly);
-    checkWatched(countOnly);
+    checkConversations();
+    checkAlerts();
+    checkWatched();
     //TODO update badge
 }
 
-checkAll($("body").length)
+$("body").append(
+'        <section id="conversations">'+
+'        <h1><i class="fa fa-envelope"></i> Conversations</h1>'+
+'        <ul></ul>'+
+'    </section>'+
+'    <section id="alerts">'+
+'        <h1><i class="fa fa-bell"></i> Alerts</h1>'+
+'        <ul></ul>'+
+'    </section>'+
+'    <section id="watched">'+
+'        <h1><i class="fa fa-eye"></i> Watched Threads</h1>'+
+'        <ul></ul>'+
+'    </section>')
+    
+chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
+    if (request == "quickLoad"){
+        sendResponse($("body").html());
+    } else if (request == "reLoad"){
+        checkAll()
+    }
+});
+
+checkAll()
+setInterval(checkAll,60*1000*5)
