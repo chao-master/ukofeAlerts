@@ -1,22 +1,33 @@
 function xfRequestPage(url,data,callback) {
-    chrome.cookies.get({"url":url,"name":"ukofe_user"},function(cookie){
-        $.extend(data,{"_xfNoRedirect":1,"_xfResponseType":"json","_xfToken":cookie.value});
-        $.get(url,data,function(data){
-            callback($($.parseHTML(data.templateHTML)[0]),data.error === undefined);
+    if (!token){
+        fetchToken = true;
+        $.post("http://ukofequestria.co.uk",{},function(resp){
+            token = $(resp).find("input[name=_xfToken]").attr("value")
+            xfRequestPage(url,data,callback)
+        });
+    } else {
+        $.extend(data,{"_xfNoRedirect":1,"_xfResponseType":"json","_xfToken":token});
+        $.get(url,data,function(resp){
+            callback($($.parseHTML(resp.templateHtml)),resp.error);
         },"json");
-    });
+    }
 }
 
 var processing = 0;
 var count = 0;
+var token;
+var fetchToken = false;
+
 function processCount(n){
     processing -= 1;
     count += n;
-    //TODO update badge
+    chrome.browserAction.setBadgeText({text:""+count})
 }
 
 function addThread(section,title,link){
-    $(section).append($("<a>").text(title).attr("href",link))
+    $(section).append(
+        $("<li>").append( $("<a>").text(title).attr("href",link))
+    )
 }
 
 function checkThreadList(url,page,section){
@@ -28,11 +39,14 @@ function checkThreadList(url,page,section){
                     addThread(section,$(this).find(".title a").text(),$(this).find(".title a").attr("href"));
                 });
             }
-            var amount = data.find(".discussionListItem").length;
-            if (amount >= 20 and page != 0){
+            var amount = data.find(".unread.discussionListItem,.primaryContent.new").length;
+            if (amount >= 20 && page != 0){
                 checkThreadList(url,page+1,section);
             }
+            console.log(url,page,amount)
             processCount(amount);
+        } else {
+            console.error(err);
         }
     });
 }
@@ -58,3 +72,5 @@ function checkAll(countOnly){
     checkWatched(countOnly);
     //TODO update badge
 }
+
+checkAll($("body").length)
