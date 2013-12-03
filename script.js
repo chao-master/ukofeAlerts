@@ -87,7 +87,19 @@ function checkAll(){
     checkConversations();
     checkAlerts();
     checkWatched();
-    //TODO update badge
+}
+
+function contentPageLoaded(url){
+    var s = url.split("/");
+    var type = s[1];
+    var id = s[2].match(/[0-9]+$/)[0]
+    var remed = $("li").filter(function(){
+        var t = $(this).find("a").attr("href").split("/");
+        return t[0] == type && t[1].indexOf(id, t[1].length - id.length) !== -1;
+    })
+    count -= remed.length;
+    chrome.browserAction.setBadgeText({text:""+count})
+    remed.remove()
 }
 
 $("body").append(
@@ -105,10 +117,12 @@ $("body").append(
 '    </section>')
     
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-    if (request == "quickLoad"){
+    if (request.message == "quickLoad"){
         sendResponse($("body").html());
-    } else if (request == "reLoad"){
+    } else if (request.message == "reLoad"){
         checkAll()
+    } else if (request.message == "pageLoad"){
+        contentPageLoaded(request.url);
     }
 });
 

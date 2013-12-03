@@ -16,5 +16,11 @@
     "scripts":["jquery.js","script.js"],
     "persistent": true
   },
+  "content_scripts": [
+    {
+      "matches": ["http://ukofequestria.co.uk/*"],
+      "js": ["jquery.js","content.js"]
+    }
+  ],
   "icons":{}
 }
