@@ -103,7 +103,7 @@ function contentPageLoaded(url){
 }
 
 $("body").append(
-'        <section id="conversations">'+
+'    <section id="conversations">'+
 '        <h1><i class="fa fa-envelope"></i> Conversations</h1>'+
 '        <ul></ul>'+
 '    </section>'+
@@ -115,6 +115,8 @@ $("body").append(
 '        <h1><i class="fa fa-eye"></i> Watched Threads</h1>'+
 '        <ul></ul>'+
 '    </section>')
+
+chrome.browserAction.setIcon({path:"icon38.png"}) //WTF chrome
     
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     if (request.message == "quickLoad"){

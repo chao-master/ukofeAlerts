@@ -10,7 +10,11 @@
     "cookies"
   ],
   "browser_action": {
-    "default_popup":"popup.html"
+    "default_popup":"popup.html",
+    "default_title":"UKofE Alerts",
+    "default_icon":{
+        "38": "/icon38.png"
+    }
   },
   "background": {
     "scripts":["jquery.js","script.js"],
