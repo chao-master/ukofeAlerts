@@ -67,7 +67,7 @@ function checkAlerts(c){
     checkThreadList("http://ukofequestria.co.uk/account/alerts",1,function(elem){
         var e = elem.find(".alertText h3")
         e.find("a").attr("target","_blank")
-        $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," "))
+        $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," ")))
         e.find("*:first-child").unwrap()
     });
 }
@@ -149,7 +149,7 @@ function updateBadge(){
 }
 
 $("body").append(
-'    <section id="conversations">'+
+'    <article id="notifications"><section id="conversations">'+
 '        <h1><i class="fa fa-envelope"></i> Conversations</h1>'+
 '        <ul></ul>'+
 '    </section>'+
@@ -160,7 +160,7 @@ $("body").append(
 '    <section id="watched">'+
 '        <h1><i class="fa fa-eye"></i> Watched Threads</h1>'+
 '        <ul></ul>'+
-'    </section>')
+'    </section></article>')
 
 var iconImg = $('<img src="icon19.png"/>')[0]
 
@@ -168,25 +168,41 @@ chrome.browserAction.setIcon({path:"icon19.png"}) //WTF chrome
     
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     if (request.message == "quickLoad"){
-        sendResponse($("body").html());
+        sendResponse({html:$("#notifications").html(),settings:localSettings});
     } else if (request.message == "reLoad"){
         checkAll()
     } else if (request.message == "pageLoad"){
+        sendResponse(localSettings);
         contentPageLoaded(request.url);
     }
 });
 
 localSettings = {
-    squareAvatars:true
+    squareAvatars:false,
+    themeOverload:{
+        enabled:false,
+        style:5249
+    }
 }
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-  $.extend(localSettings,items)
+    $.each(changes,function(k){
+        var ks = k.split("-");
+        var t=localSettings;
+        for(var i=0;i<ks.length-1;i++){
+            t = t[ks[i]]
+        }
+        var v = this.newValue;
+        if (typeof(t[ks[i]]) == "number"){
+            v*=1
+        }
+        t[ks[i]] = v;
+    })
 });
 
-chrome.storage.get(null,function(items){
+chrome.storage.local.get(null,function(items){
     $.extend(localSettings,items)
-}
+})
 
 checkAll()
 setInterval(checkAll,60*1000*5) //TODO use chrome API insted

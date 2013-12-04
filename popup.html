@@ -11,6 +11,7 @@
                 font-size:14px;
                 font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
                 color: #222222;
+                background:url("smallLogo.svg") no-repeat bottom right;
             }
             h1 {
                 font-family:Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -42,21 +43,30 @@
             a:hover{
                 text-decoration: underline;
             }
+            #options header{
+                font-weight:bold;
+            }
+            #options label{
+                display:block;
+            }
         </style>
         <base href="http://ukofequestria.co.uk/"/>
     </head>
     <body>
-        <section id="conversations">
-            <h1><i class="fa fa-envelope"></i> Conversations</h1>
-            <ul></ul>
-        </section>
-        <section id="alerts">
-            <h1><i class="fa fa-bell"></i> Alerts</h1>
-            <ul></ul>
-        </section>
-        <section id="watched">
-            <h1><i class="fa fa-eye"></i> Watched Threads</h1>
-            <ul></ul>
-        </section>
+        <article id="notifications">
+            <section id="conversations">
+                <h1><i class="fa fa-envelope"></i> Conversations</h1>
+                <ul></ul>
+            </section>
+            <section id="alerts">
+                <h1><i class="fa fa-bell"></i> Alerts</h1>
+                <ul></ul>
+            </section>
+            <section id="watched">
+                <h1><i class="fa fa-eye"></i> Watched Threads</h1>
+                <ul></ul>
+            </section>
+        </article>
+        <article id="options" style="display:none"><h1>Don't tell Alty or Becca Settings</h1><ul></ul></article>
     </body>
 </html>

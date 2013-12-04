@@ -24,7 +24,8 @@
   "content_scripts": [
     {
       "matches": ["http://ukofequestria.co.uk/*"],
-      "js": ["jquery.js","content.js"]
+      "js": ["jquery.js","content.js"],
+      "css": ["content.css"]
     }
   ],
   "icons":{}
