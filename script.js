@@ -65,10 +65,10 @@ function checkAlerts(c){
     $("#alerts ul").empty();
     $("#alerts").addClass("nothing")
     checkThreadList("http://ukofequestria.co.uk/account/alerts",1,function(elem){
-        var e = elem.find(".PopupItemLink")
-        $("#alerts ul").append($("<li>").append(
-            e.attr("class","").attr("target","_blank").attr("title",e.text())
-        ))
+        var e = elem.find(".alertText h3")
+        e.find("a").attr("target","_blank")
+        $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," "))
+        e.find("*:first-child").unwrap()
     });
 }
 function checkWatched(){
@@ -175,6 +175,18 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
         contentPageLoaded(request.url);
     }
 });
+
+localSettings = {
+    squareAvatars:true
+}
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+  $.extend(localSettings,items)
+});
+
+chrome.storage.get(null,function(items){
+    $.extend(localSettings,items)
+}
 
 checkAll()
 setInterval(checkAll,60*1000*5) //TODO use chrome API insted
