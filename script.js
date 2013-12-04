@@ -15,13 +15,14 @@ function xfRequestPage(url,data,callback) {
 
 var processing = 0;
 var count = 0;
+var lastCount = 0;
 var token;
 var fetchToken = false;
 
 function processCount(n){
     processing -= 1;
     count += n;
-    chrome.browserAction.setBadgeText({text:""+count})
+    updateBadge()
 }
 
 function addThread(section,title,link){
@@ -97,9 +98,54 @@ function contentPageLoaded(url){
         var t = $(this).find("a").attr("href").split("/");
         return t[0] == type && t[1].indexOf(id, t[1].length - id.length) !== -1;
     })
-    count -= remed.length;
-    chrome.browserAction.setBadgeText({text:""+count})
-    remed.remove()
+    if(remed.length){
+        count -= remed.length;
+        updateBadge()
+        remed.remove()
+        spinIcon()
+    }
+    
+}
+
+function updateIcon(angle,faded){
+    var cvs = $('<canvas width="19" height="19"></canvas>')[0]
+    var ctx = cvs.getContext("2d")
+    ctx.translate(8,8)
+    ctx.rotate(angle*Math.PI / 180)
+    ctx.drawImage(iconImg,-8,-8)
+    chrome.browserAction.setIcon({imageData:{"19":ctx.getImageData(0,0,19,19)}})
+}
+
+var spinning=false;
+function spinIcon(speed){
+    if (spinning) return;
+    var rot=0;
+    spinning=true;
+    var rFn = function(){
+        rot+=9;
+        updateIcon(rot,false);
+        if (rot<360 && spinning){
+            setTimeout(rFn,500/80);
+        } else {
+            updateIcon(0,false)
+            spinning = false
+        }
+    }
+    rFn()
+}
+
+function updateBadge(){
+    if (count != lastCount){
+        lastCount = count
+        if (count){
+            chrome.browserAction.setBadgeText({text:""+count});
+        } else {
+            chrome.browserAction.setBadgeText({text:""});
+        }
+        if (!processing){
+            spinIcon();
+        }
+    }
 }
 
 $("body").append(
@@ -116,7 +162,9 @@ $("body").append(
 '        <ul></ul>'+
 '    </section>')
 
-chrome.browserAction.setIcon({path:"icon38.png"}) //WTF chrome
+var iconImg = $('<img src="icon19.png"/>')[0]
+
+chrome.browserAction.setIcon({path:"icon19.png"}) //WTF chrome
     
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     if (request.message == "quickLoad"){
@@ -129,4 +177,4 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 });
 
 checkAll()
-setInterval(checkAll,60*1000*5)
+setInterval(checkAll,60*1000*5) //TODO use chrome API insted
