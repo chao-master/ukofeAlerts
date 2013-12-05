@@ -1,0 +1,6 @@
+body.ukofea-squareAvatars .avatar img,
+body.ukofea-squareAvatars .avatar .img,
+body.ukofea-squareAvatars .avatarCropper{
+    border-radius:0;
+    -webkit-border-radius:0;
+}

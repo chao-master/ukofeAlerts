@@ -201,8 +201,15 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 });
 
 chrome.storage.local.get(null,function(items){
-    $.extend(localSettings,items)
-})
+    $.each(changes,function(k){
+        var ks = k.split("-");
+        var t=localSettings;
+        for(var i=0;i<ks.length-1;i++){
+            t = t[ks[i]]
+        }
+        t[ks[i]] = this;
+    })
+});
 
 checkAll()
 setInterval(checkAll,60*1000*5) //TODO use chrome API insted
