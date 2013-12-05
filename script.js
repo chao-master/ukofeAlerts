@@ -168,7 +168,7 @@ chrome.browserAction.setIcon({path:"icon19.png"}) //WTF chrome
     
 chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     if (request.message == "quickLoad"){
-        sendResponse({html:$("#notifications").html(),settings:localSettings});
+        sendResponse({html:$("#notifications").html(),settings:localSettings.get("")});
     } else if (request.message == "reLoad"){
         checkAll()
     } else if (request.message == "pageLoad"){
@@ -177,37 +177,17 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     }
 });
 
-localSettings = {
+localSettings = new BasicSettings({
     squareAvatars:false,
     themeOverload:{
         enabled:false,
         style:5249
     }
-}
+})
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    $.each(changes,function(k){
-        var ks = k.split("-");
-        var t=localSettings;
-        for(var i=0;i<ks.length-1;i++){
-            t = t[ks[i]]
-        }
-        var v = this.newValue;
-        if (typeof(t[ks[i]]) == "number"){
-            v*=1
-        }
-        t[ks[i]] = v;
-    })
-});
-
-chrome.storage.local.get(null,function(items){
-    $.each(changes,function(k){
-        var ks = k.split("-");
-        var t=localSettings;
-        for(var i=0;i<ks.length-1;i++){
-            t = t[ks[i]]
-        }
-        t[ks[i]] = this;
+    $.each(changes,function(k,v){
+        localSettings.set(k,v.newValue);
     })
 });
 

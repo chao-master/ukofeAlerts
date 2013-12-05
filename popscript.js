@@ -24,7 +24,7 @@ function addOption(to,key,value,path){
     if (type == "object"){
         obj = $("<ul>").appendTo("<li><header>"+key+"</header></li>");
         $.each(value,function(k,v){
-            addOption(obj,k,v,path+key+"-");
+            addOption(obj,k,v,path+key+".");
         });
     } else {
         obj = $("<input>");

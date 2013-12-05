@@ -18,7 +18,7 @@
     }
   },
   "background": {
-    "scripts":["jquery.js","script.js"],
+    "scripts":["jquery.js","basicSettings.js","script.js"],
     "persistent": true
   },
   "content_scripts": [
@@ -28,5 +28,8 @@
       "css": ["content.css"]
     }
   ],
-  "icons":{}
+  "icons":{
+    "19":"icon19.png",
+    "38":"icon38.png"
+  }
 }
