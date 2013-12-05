@@ -172,7 +172,7 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     } else if (request.message == "reLoad"){
         checkAll()
     } else if (request.message == "pageLoad"){
-        sendResponse(localSettings);
+        sendResponse(localSettings.get(""));
         contentPageLoaded(request.url);
     }
 });
