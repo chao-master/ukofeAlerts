@@ -4,3 +4,6 @@ body.ukofea-squareAvatars .avatarCropper{
     border-radius:0;
     -webkit-border-radius:0;
 }
+li.ukofea-firstFetched {
+    border-bottom: 10px solid #f0f0f0;
+}
