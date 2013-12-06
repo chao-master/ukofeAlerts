@@ -72,7 +72,7 @@ function checkAlerts(c){
         if (alertFilter.enabled) {
             var ce = e.clone();
             ce.children().remove();
-            var idenityText = ce.text().match(/\S+/);
+            var idenityText = ce.text().match(/\S+/)[0];
             var keep = true;
             switch(idenityText){
                 case "replied":
