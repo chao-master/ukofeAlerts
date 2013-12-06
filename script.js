@@ -70,7 +70,9 @@ function checkAlerts(c){
         
         var alertFilter = localSettings.get("alertFilter");
         if (alertFilter.enabled) {
-            var idenityText = e.clone().children().remove().parent().text().match(/\S+/);
+            var ce = e.clone();
+            ce.children().remove();
+            var idenityText = ce.text().match(/\S+/);
             var keep = true;
             switch(idenityText){
                 case "replied":
