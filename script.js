@@ -181,7 +181,7 @@ localSettings = new BasicSettings({
     squareAvatars:false,
     retriveFirstPost:false,
     advLoadWait:false,
-    massSpoilerToggle:false
+    massSpoilerToggle:false,
     themeOverload:{
         enabled:false,
         style:5249
