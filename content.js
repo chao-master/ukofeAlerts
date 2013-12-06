@@ -11,6 +11,6 @@ chrome.runtime.sendMessage({
     if (window.location.pathname.search("^/threads/[^/]+/[^/]+/?") == 0 && settings.retriveFirstPost){
         $("<li class='ukofea-firstFetched'>...Loading...</li>")
             .prependTo("#messageList")
-            .load(window.location+"/.. #messageList>li:first",function(){$(this).children().unwrap().addClass("ukofea-firstFetched")})
+            .load(window.location.pathname+"/.. #messageList>li:first",function(){$(this).children().unwrap().addClass("ukofea-firstFetched")})
     }
 });
