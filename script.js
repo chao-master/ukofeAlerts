@@ -180,6 +180,7 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 localSettings = new BasicSettings({
     squareAvatars:false,
     retriveFirstPost:false,
+    advLoadWait:false,
     themeOverload:{
         enabled:false,
         style:5249

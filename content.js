@@ -1,7 +1,14 @@
+function pageFullyLoaded(){
+        window.location.hash += " ";
+        console.log("page Loaded")
+    }
+
 chrome.runtime.sendMessage({
     message:"pageLoad",
     url:window.location.pathname
 },function(settings){
+    var r=0;
+    
     if (settings.squareAvatars){
         $("body").addClass("ukofea-squareAvatars");
     }
@@ -11,6 +18,29 @@ chrome.runtime.sendMessage({
     if (window.location.pathname.search("^/threads/[^/]+/[^/]+/?") == 0 && settings.retriveFirstPost){
         $("<li class='ukofea-firstFetched'>...Loading...</li>")
             .prependTo("#messageList")
-            .load(window.location.pathname+"/.. #messageList>li:first",function(){$(this).children().unwrap().addClass("ukofea-firstFetched")})
+            .load(window.location.pathname+"/.. #messageList>li:first",function(){
+                $(this).children().unwrap().addClass("ukofea-firstFetched")
+                if(settings.advLoadWait && !r){
+                    pageFullyLoaded();
+                }
+            })
+    }
+    if (settings.advLoadWait){
+        $("img").each(function(){
+            if(!this.complete){
+                r++;
+                $(this).load(function(){
+                    r--;
+                    console.log(this.complete)
+                    if(!r){
+                        pageFullyLoaded();
+                    }
+                })
+            }
+            console.log(this.complete)
+        })
+        if (!r){
+            pageFullyLoaded();
+        }
     }
 });
