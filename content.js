@@ -15,6 +15,7 @@ chrome.runtime.sendMessage({
     if (settings.themeOverload.enabled){
         $("link[rel=stylesheet]").attr("href",function(i,h){return h.replace(/[0-9]+(?=&dir)/,settings.themeOverload.style)})
     }
+    
     if (window.location.pathname.search("^/threads/[^/]+/[^/]+/?") == 0 && settings.retriveFirstPost){
         $("<li class='ukofea-firstFetched'>...Loading...</li>")
             .prependTo("#messageList")
@@ -25,6 +26,7 @@ chrome.runtime.sendMessage({
                 }
             })
     }
+    
     if (settings.advLoadWait){
         $("img").each(function(){
             if(!this.complete){
@@ -43,6 +45,7 @@ chrome.runtime.sendMessage({
             pageFullyLoaded();
         }
     }
+    
     if (settings.massSpoilerToggle){
     $("<div class='button'>Show All</div>")
         .css({display:"inline-block","margin-left":"10px"})
@@ -54,5 +57,12 @@ chrome.runtime.sendMessage({
         .click(function(){
             $(".bbmSpoilerBlock:has(>.quotecontent>.bbm_spoiler[style='display: block;'])>.type>.button:first-child").click()
         }).appendTo(".bbmSpoilerBlock>.type");
+    }
+    
+    if (settings.ignoreNotice){
+        $(".ignored, .message:has(.messageNotices li:contains('ignoring'))").addClass('subIgnored').removeClass('ignored');
+        $(".message .messageNotices li:contains('ignoring'), .messageSimple .messageNotices li:contains('ignoring')").text(function(i,t){return t.replace("this member",$(this).parents(".message, .messageSimple").attr("data-author"))});
+        $(".message.subIgnored .messageNotices, .messageSimple .messageNotices li:contains('ignoring')").click(function(){$(this).closest(".message, .messageSimple").toggleClass("subIgnored")});
+        $(".bbCodeQuote.subIgnored .attribution").click(function(){$(this).closest(".bbCodeQuote").toggleClass("subIgnored")});
     }
 });

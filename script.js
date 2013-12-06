@@ -67,6 +67,31 @@ function checkAlerts(c){
     checkThreadList("http://ukofequestria.co.uk/account/alerts",1,function(elem){
         var e = elem.find(".alertText h3")
         e.find("a").attr("target","_blank")
+        
+        var alertFilter = localSettings.get("alertFilter");
+        if (alertFilter.enabled) {
+            var idenityText = e.clone().children().remove().parent().text().match(/\S+/);
+            var keep = true;
+            switch(idenityText){
+                case "replied":
+                    keep = !alertFilter.hideReplies;
+                    break;
+                case "quoted":
+                    keep = !alertFilter.hideQuotes;
+                    break;
+                case "tagged":
+                    keep = !alertFilter.hideTags;
+                    break;
+                case "commented":
+                    keep = !alertFilter.hideProfileReplies;
+                    break;
+                case "wrote":
+                    keep = !alertFilter.hideProfileMessages;
+                    break;
+            }
+            if (!keep){return}
+        }
+        
         $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," ")))
         e.find("*:first-child").unwrap()
     });
@@ -178,10 +203,19 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 });
 
 localSettings = new BasicSettings({
-    squareAvatars:false,
     retriveFirstPost:false,
     advLoadWait:false,
     massSpoilerToggle:false,
+    ignoreNotice:false,
+    alertFilter:{
+        enabled:false,
+        hideReplies:true,
+        hideQuotes:false,
+        hideTags:false,
+        hideProfileReplies:false,
+        hideProfilePosts:false
+    },
+    squareAvatars:false,
     themeOverload:{
         enabled:false,
         style:5249
