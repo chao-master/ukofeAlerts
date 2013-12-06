@@ -43,4 +43,16 @@ chrome.runtime.sendMessage({
             pageFullyLoaded();
         }
     }
+    if (settings.massSpoilerToggle){
+    $("<div class='button'>Show All</div>")
+        .css({display:"inline-block","margin-left":"10px"})
+        .click(function(){
+            $(".bbmSpoilerBlock:has(>.quotecontent>.bbm_spoiler[style='display: none;'],>.quotecontent>.bbm_spoiler:not([style]))>.type>.button:first-child").click()
+        }).appendTo(".bbmSpoilerBlock>.type");
+    $("<div class='button'>Hide All</div>")
+        .css({display:"inline-block","margin-left":"10px"})
+        .click(function(){
+            $(".bbmSpoilerBlock:has(>.quotecontent>.bbm_spoiler[style='display: block;'])>.type>.button:first-child").click()
+        }).appendTo(".bbmSpoilerBlock>.type");
+    }
 });
