@@ -35,15 +35,15 @@ function checkThreadList(url,page,addFunc){
     processing += 1;
     xfRequestPage(url,{"page":page},function(data,err){
         if (!err){
+            var added = 0;
             data.find(".unread.discussionListItem,.primaryContent.new").each(function(){
-                addFunc($(this))
+                added += addFunc($(this));
             });
             var amount = data.find(".unread.discussionListItem,.primaryContent.new").length;
             if (amount >= 20 && page != 0){
                 checkThreadList(url,page+1,addFunc);
             }
-            console.log(url,page,amount)
-            processCount(amount);
+            processCount(added);
         } else {
             console.error(err);
         }
@@ -59,6 +59,7 @@ function checkConversations(){
         $("#conversations ul").append($("<li>").append(
             e.attr("class","").attr("target","_blank").attr("title",e.text())
         ))
+        return true;
     });
 }
 function checkAlerts(c){
@@ -91,11 +92,12 @@ function checkAlerts(c){
                     keep = !alertFilter.hideProfileMessages;
                     break;
             }
-            if (!keep){return}
+            if (!keep){return false}
         }
         
         $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," ")))
         e.find("*:first-child").unwrap()
+        return true;
     });
 }
 function checkWatched(){
@@ -106,6 +108,7 @@ function checkWatched(){
         $("#watched ul").append($("<li>").append(
             e.attr("class","").attr("target","_blank").attr("title",e.text())
         ))
+        return true;
     });
 }
 
