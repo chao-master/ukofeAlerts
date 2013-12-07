@@ -3,7 +3,9 @@
 
   "name": "UKofE Alerts",
   "description": "Shows Alerts, Conversations & Watched thread updates",
-  "version": "1.0",
+  "version": "1.5",
+  "homepage_url":"http://ukofequestria.co.uk/threads/11321",
+  "update_url":"http://ukofe.playat.ch/~Ripp_/chromeAddons/update.xml",
 
   "permissions": [
     "http://ukofequestria.co.uk/",
