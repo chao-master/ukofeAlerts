@@ -54,8 +54,7 @@ function checkConversations(){
     $("#conversations ul").empty();
     $("#conversations").addClass("nothing")
     checkThreadList("http://ukofequestria.co.uk/conversations",1,function(elem){
-        var e = elem.find(".title a");
-        e.find(".prefix").remove()
+        var e = elem.find(".title a.PreviewTooltip");
         $("#conversations ul").append($("<li>").append(
             e.attr("class","").attr("target","_blank").attr("title",e.text())
         ))
