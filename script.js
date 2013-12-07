@@ -165,15 +165,18 @@ function spinIcon(speed){
 
 function updateBadge(){
     if (count != lastCount){
-        lastCount = count
         if (count){
             chrome.browserAction.setBadgeText({text:""+count});
         } else {
             chrome.browserAction.setBadgeText({text:""});
         }
         if (!processing){
+            if (lastCount < count && localSettings.get("alertSound")){
+                alertSoundElem.play()
+            }
             spinIcon();
         }
+        lastCount = count
     }
 }
 
@@ -211,6 +214,7 @@ localSettings = new BasicSettings({
     advLoadWait:false,
     massSpoilerToggle:false,
     ignoreNotice:false,
+    alertSound:true,
     alertFilter:{
         enabled:false,
         hideReplies:true,
@@ -231,6 +235,8 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         localSettings.set(k,v.newValue);
     })
 });
+
+var alertSoundElem = $("<audio>").attr("src","alert.ogg").appendTo("body")[0]
 
 checkAll()
 setInterval(checkAll,60*1000*5) //TODO use chrome API insted
