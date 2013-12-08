@@ -175,8 +175,8 @@ function updateBadge(){
                 alertSoundElem.play()
             }
             spinIcon();
+            lastCount = count
         }
-        lastCount = count
     }
 }
 
