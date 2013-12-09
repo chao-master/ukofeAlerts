@@ -43,11 +43,37 @@
             a:hover{
                 text-decoration: underline;
             }
-            #options header{
+            #options header,#experimental header{
                 font-weight:bold;
             }
-            #options label{
+
+            #conversations.nothing::after, #alerts.nothing::after, #watched.nothing::after {
+                content: "All caught up";
+                display: block;
+                margin-top: -10px;
+                margin-left: 1.5em;
+            }
+            
+            #options{
+                display:none;
+            }
+            .options #options{
                 display:block;
+            }
+            .options #notifications{
+                display:none;
+            }
+            #toggleOptions{
+                padding: 1px 20px;
+            }
+            #toggleOptions::before{
+                content:"Options"
+            }
+            .options #toggleOptions::before{
+                content:"Notifications"
+            }
+            #experimental h1{
+                font-size:18px;
             }
         </style>
         <base href="http://ukofequestria.co.uk/"/>
@@ -67,6 +93,8 @@
                 <ul></ul>
             </section>
         </article>
-        <article id="options" style="display:none"><h1>Don't tell Alty or Becca Settings</h1><ul></ul></article>
+        <button id="toggleOptions"></button>
+        <article id="options"><h1>Options</h1><ul></ul></article>
+        <article id="experimental" style="display:none"><h1>The "Don't tell Alty or Becca" Settings</h1><ul></ul></article>
     </body>
 </html>

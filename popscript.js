@@ -1,7 +1,14 @@
 chrome.runtime.sendMessage({message:"quickLoad"}, function(response) {
     $("#notifications").empty().append(response.html)
-    $.each(response.settings,function(k,v){
-        addOption($("#options ul"),k,v,"");
+    $.each(response.settings.standard,function(k,v){
+        addOption($("#options ul"),k,v,"standard.");
+    })
+    $.each(response.settings.hidden,function(k,v){
+        addOption($("#experimental ul"),k,v,"hidden.");
+    })
+    
+    $("#toggleOptions").click(function(){
+        $("body").toggleClass("options")
     })
 });
 
@@ -10,7 +17,7 @@ $(window).keydown(function(e){
     if(c[p]==e.keyCode){
         p++;
         if(p==c.length){
-            $("#options").css("display","block");
+            $("#experimental").css("display","block");
             $(this).unbind("keydown",arguments.callee);
         }
     }else{

@@ -2,13 +2,13 @@ function xfRequestPage(url,data,callback) {
     if (!token){
         fetchToken = true;
         $.post("http://ukofequestria.co.uk",{},function(resp){
-            token = $(resp).find("input[name=_xfToken]").attr("value")
+            token = $(resp.replace(/<img\b[^>]*>/ig, '')).find("input[name=_xfToken]").attr("value")
             xfRequestPage(url,data,callback)
         });
     } else {
         $.extend(data,{"_xfNoRedirect":1,"_xfResponseType":"json","_xfToken":token});
         $.get(url,data,function(resp){
-            callback($($.parseHTML(resp.templateHtml)),resp.error);
+            callback($($.parseHTML(resp.templateHtml.replace(/<img\b[^>]*>/ig, ''))),resp.error);
         },"json");
     }
 }
@@ -58,6 +58,7 @@ function checkConversations(){
         $("#conversations ul").append($("<li>").append(
             e.attr("class","").attr("target","_blank").attr("title",e.text())
         ))
+        $("#conversations").removeClass("nothing")
         return true;
     });
 }
@@ -68,32 +69,33 @@ function checkAlerts(c){
         var e = elem.find(".alertText h3")
         e.find("a").attr("target","_blank")
         
-        var alertFilter = localSettings.get("alertFilter");
-        if (alertFilter.enabled) {
+        var alertFilter = localSettings.get("standard.Alert Filtering");
+        if (alertFilter.Enabled) {
             var ce = e.clone();
             ce.children().remove();
             var idenityText = ce.text().match(/\S+/)[0];
             var keep = true;
             switch(idenityText){
                 case "replied":
-                    keep = !alertFilter.hideReplies;
+                    keep = !alertFilter["Hide Replies"];
                     break;
                 case "quoted":
-                    keep = !alertFilter.hideQuotes;
+                    keep = !alertFilter["Hide Quotes"];
                     break;
                 case "tagged":
-                    keep = !alertFilter.hideTags;
+                    keep = !alertFilter["Hide Tags"];
                     break;
                 case "commented":
-                    keep = !alertFilter.hideProfileReplies;
+                    keep = !alertFilter["Hide Profile Replies"];
                     break;
                 case "wrote":
-                    keep = !alertFilter.hideProfileMessages;
+                    keep = !alertFilter["Hide Profile Messages"];
                     break;
             }
             if (!keep){return false}
         }
         
+        $("#alerts").removeClass("nothing")
         $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," ")))
         e.find("*:first-child").unwrap()
         return true;
@@ -102,13 +104,20 @@ function checkAlerts(c){
 function checkWatched(){
     $("#watched ul").empty();
     $("#watched").addClass("nothing")
-    checkThreadList("http://ukofequestria.co.uk/watched/threads",0,function(elem){
-        var e = elem.find(".PreviewTooltip")
-        $("#watched ul").append($("<li>").append(
-            e.attr("class","").attr("target","_blank").attr("title",e.text())
-        ))
-        return true;
-    });
+    
+    if(localSettings.get("standard.Show Watched Threads")){
+        $("#watched").css("display","block");
+        checkThreadList("http://ukofequestria.co.uk/watched/threads",0,function(elem){
+            $("#watched").removeClass("nothing")
+            var e = elem.find(".PreviewTooltip")
+            $("#watched ul").append($("<li>").append(
+                e.attr("class","").attr("target","_blank").attr("title",e.text())
+            ))
+            return true;
+        });
+    } else {
+        $("#watched").css("display","none");
+    }
 }
 
 function checkAll(){
@@ -171,7 +180,7 @@ function updateBadge(){
             chrome.browserAction.setBadgeText({text:""});
         }
         if (!processing){
-            if (lastCount < count && localSettings.get("alertSound")){
+            if (lastCount < count && localSettings.get("standard.Notification Sounds")){
                 alertSoundElem.play()
             }
             spinIcon();
@@ -181,7 +190,8 @@ function updateBadge(){
 }
 
 $("body").append(
-'    <article id="notifications"><section id="conversations">'+
+'    <article id="notifications">'+
+'    <section id="conversations">'+
 '        <h1><i class="fa fa-envelope"></i> Conversations</h1>'+
 '        <ul></ul>'+
 '    </section>'+
@@ -210,23 +220,28 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
 });
 
 localSettings = new BasicSettings({
-    retriveFirstPost:false,
-    advLoadWait:false,
-    massSpoilerToggle:false,
-    ignoreNotice:false,
-    alertSound:true,
-    alertFilter:{
-        enabled:false,
-        hideReplies:true,
-        hideQuotes:false,
-        hideTags:false,
-        hideProfileReplies:false,
-        hideProfilePosts:false
+    standard:{
+        "Notification Sounds":true,
+        "Show Watched Threads":true,
+        "Alert Filtering":{
+            "Enabled":false,
+            "Hide Replies":true,
+            "Hide Quotes":false,
+            "Hide Tags":false,
+            "Hide Profile Replies":false,
+            "Hide Profile Posts":false
+        }
     },
-    squareAvatars:false,
-    themeOverload:{
-        enabled:false,
-        style:5249
+    hidden:{
+        retriveFirstPost:false,
+        advLoadWait:false,
+        massSpoilerToggle:false,
+        ignoreNotice:false,
+        squareAvatars:false,
+        themeOverload:{
+            enabled:false,
+            style:5249
+        }
     }
 })
 
