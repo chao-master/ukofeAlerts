@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+
+  "name": "UKofE Alerts",
+  "description": "Shows Alerts, Conversations & Watched thread updates",
+  "version": "2.1",
+  "homepage_url":"http://ukofequestria.co.uk/threads/11321",
+  "update_url":"http://ukofe.playat.ch/~Ripp_/chromeAddons/update.xml",
+
+  "permissions": [
+    "http://ukofequestria.co.uk/",
+    "cookies",
+    "storage"
+  ],
+  "browser_action": {
+    "default_popup":"popup.html",
+    "default_title":"UKofE Alerts",
+    "default_icon":{
+        "19": "icon19.png"
+    }
+  },
+  "background": {
+    "scripts":["jquery.js","basicSettings.js","script.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://ukofequestria.co.uk/*"],
+      "js": ["jquery.js","content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "icons":{
+    "19":"icon19.png",
+    "38":"icon38.png"
+  }
+}

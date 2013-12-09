@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="jquery.js"></script>
+        <script src="popscript.js"></script>
+        <link href="font-awesome.min.css" rel="stylesheet">
+        <style>
+            body {
+                width:300px;
+                min-height:100px;
+                font-size:14px;
+                font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+                color: #222222;
+                background:url("smallLogo.svg") no-repeat bottom right;
+            }
+            h1 {
+                font-family:Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size:20px;
+                font-weight:normal;
+                margin: 5px 0px
+            }
+            ul li {
+                list-style-type: circle;
+            }
+            ul li:hover{
+                list-style-type: square;
+            }
+            ul {
+                padding-left: 1.5em;
+                margin-top: 0em;
+                max-height:400px;
+                overflow-y:auto;
+                overflow-x:hidden;
+            }
+            a {
+                color: #0088cc;
+                text-decoration: none;
+            }
+            #conversations a,#watched a{
+                display:block;
+                white-space:nowrap;
+            }
+            a:hover{
+                text-decoration: underline;
+            }
+            #options header,#experimental header{
+                font-weight:bold;
+            }
+            #notifications{
+                margin-bottom:5px;
+            }
+
+            #conversations.nothing::after, #alerts.nothing::after, #watched.nothing::after {
+                content: "All caught up";
+                display: block;
+                margin-top: -10px;
+                margin-left: 1.5em;
+            }
+            
+            #options{
+                display:none;
+            }
+            #toggleOptions{
+                padding: 1px 20px;
+            }
+            #toggleOptions::before{
+                content:"Options"
+            }
+            .options #toggleOptions::before{
+                content:"Notifications"
+            }
+            #experimental {
+                border-top:dashed 1px black;
+                margin-top:5px;
+            }
+        </style>
+        <base href="http://ukofequestria.co.uk/"/>
+    </head>
+    <body>
+        <article id="notifications">
+            <section id="conversations">
+                <h1><i class="fa fa-envelope"></i> Conversations</h1>
+                <ul></ul>
+            </section>
+            <section id="alerts">
+                <h1><i class="fa fa-bell"></i> Alerts</h1>
+                <ul></ul>
+            </section>
+            <section id="watched">
+                <h1><i class="fa fa-eye"></i> Watched Threads</h1>
+                <ul></ul>
+            </section>
+        </article>
+        <button id="toggleOptions"></button>
+        <article id="options"><h1><i class="fa fa-wrench"></i> Options</h1><ul></ul></article>
+        <article id="experimental" style="display:none"><h1><i class="fa fa-bug"></i> The "Don't tell Alty or Becca" Settings</h1><ul></ul></article>
+    </body>
+</html>
