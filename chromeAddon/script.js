@@ -1,15 +1,22 @@
 function xfRequestPage(url,data,callback) {
+
+    function error(jqXHR,err,b){
+        $("#errors ul").append($("<li>").text(b+" whilst loading "+url));
+        $("#errors").removeClass("nothing")
+        console.error(jqXHR,err,b);
+    }
+
     if (!token){
         fetchToken = true;
         $.post("http://ukofequestria.co.uk",{},function(resp){
             token = $(resp.replace(/<img\b[^>]*>/ig, '')).find("input[name=_xfToken]").attr("value")
             xfRequestPage(url,data,callback)
-        });
+        }).fail(error);
     } else {
         $.extend(data,{"_xfNoRedirect":1,"_xfResponseType":"json","_xfToken":token});
         $.get(url,data,function(resp){
             callback($($.parseHTML(resp.templateHtml.replace(/<img\b[^>]*>/ig, ''))),resp.error);
-        },"json");
+        },"json").fail(error);
     }
 }
 
@@ -121,6 +128,8 @@ function checkWatched(){
 }
 
 function checkAll(){
+    $("#errors ul").empty();
+    $("#errors").addClass("nothing");
     processing = 0;
     count = 0;
     checkConversations();
@@ -191,6 +200,10 @@ function updateBadge(){
 
 $("body").append(
 '    <article id="notifications">'+
+'    <section id="errors" class="nothing">'+
+'        <h1><i class="fa fa-times"></i> Errors</h1>'+
+'        <ul></ul>'+
+'    </section>'+
 '    <section id="conversations">'+
 '        <h1><i class="fa fa-envelope"></i> Conversations</h1>'+
 '        <ul></ul>'+
