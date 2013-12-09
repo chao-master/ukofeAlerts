@@ -8,6 +8,7 @@ chrome.runtime.sendMessage({message:"quickLoad"}, function(response) {
     })
     
     $("#toggleOptions").click(function(){
+        $("#notifications,#options").animate({"height":"toggle"})
         $("body").toggleClass("options")
     })
 });
@@ -17,7 +18,7 @@ $(window).keydown(function(e){
     if(c[p]==e.keyCode){
         p++;
         if(p==c.length){
-            $("#experimental").css("display","block");
+            $("#experimental").animate({"height":"toggle"});
             $(this).unbind("keydown",arguments.callee);
         }
     }else{
