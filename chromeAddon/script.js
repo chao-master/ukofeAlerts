@@ -139,6 +139,7 @@ function checkAll(){
 
 function contentPageLoaded(url){
     var s = url.split("/");
+    if (s.length < 2){return}
     var type = s[1];
     var id = s[2].match(/[0-9]+$/)[0]
     var remed = $("li").filter(function(){
@@ -150,6 +151,7 @@ function contentPageLoaded(url){
         updateBadge()
         remed.remove()
         spinIcon()
+        $("#notifications>section>ul:empty").parent().addClass(".nothing")
     }
     
 }
