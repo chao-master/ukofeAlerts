@@ -52,7 +52,7 @@ function BasicSettings(settings,ready) {
     this.get = function(path) {
         var lkup = evalPath(path);
         if (lkup.type != "object") {
-            return lkup.value==undefined?lkup.def:lkup.vale;
+            return lkup.value==undefined?lkup.def:lkup.value;
         }
         function loop(over) {
             var rtn = {};
@@ -60,7 +60,7 @@ function BasicSettings(settings,ready) {
                 if (v.type == "object") {
                     rtn[k] = loop(v.value)
                 } else {
-                    rtn[k] = v.value==undefined?v.def:v.vale
+                    rtn[k] = v.value==undefined?v.def:v.value;
                 }
             })
             return rtn;
