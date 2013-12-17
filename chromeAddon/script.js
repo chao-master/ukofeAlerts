@@ -137,23 +137,24 @@ function checkAll(){
     checkWatched();
 }
 
-function contentPageLoaded(url){
-    var s = url.split("/");
-    if (s.length < 2){return}
-    var type = s[1];
-    var id = s[2].match(/[0-9]+$/)[0]
-    var remed = $("li").filter(function(){
-        var t = $(this).find("a").attr("href").split("/");
-        return t[0] == type && t[1].indexOf(id, t[1].length - id.length) !== -1;
-    })
-    if(remed.length){
-        count -= remed.length;
-        updateBadge()
-        remed.remove()
-        spinIcon()
-        $("#notifications>section>ul:empty").parent().addClass(".nothing")
+function contentPageLoaded(url,lastPage){
+    if (lastPage){
+        var s = url.split("/");
+        if (s.length < 2){return}
+        var type = s[1];
+        var id = s[2].match(/[0-9]+$/)[0]
+        var remed = $("li").filter(function(){
+            var t = $(this).find("a").attr("href").split("/");
+            return t[0] == type && t[1].indexOf(id, t[1].length - id.length) !== -1;
+        })
+        if(remed.length){
+            count -= remed.length;
+            updateBadge()
+            remed.remove()
+            spinIcon()
+            $("#notifications>section>ul:empty").parent().addClass(".nothing")
+        }
     }
-    
 }
 
 function updateIcon(angle,faded){
@@ -230,7 +231,7 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
         checkAll()
     } else if (request.message == "pageLoad"){
         sendResponse(localSettings.get(""));
-        contentPageLoaded(request.url);
+        contentPageLoaded(request.url,request.lastPage);
     }
 });
 

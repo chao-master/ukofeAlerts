@@ -5,7 +5,8 @@ function pageFullyLoaded(){
 
 chrome.runtime.sendMessage({
     message:"pageLoad",
-    url:window.location.pathname
+    url:window.location.pathname,
+    lastPage:$(".postsRemaining").length == 0
 },function(settings){
     var r=0;
     
