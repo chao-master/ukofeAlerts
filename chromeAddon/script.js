@@ -261,6 +261,10 @@ localSettings = new BasicSettings({
         themeOverload:{
             enabled:false,
             style:5249
+        },
+        miniMode:{
+            forumGames:false,
+            fullSite:false,
         }
     }
 },function(){

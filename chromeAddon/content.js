@@ -12,6 +12,13 @@ chrome.runtime.sendMessage({
     if (settings.hidden.squareAvatars){
         $("body").addClass("ukofea-squareAvatars");
     }
+    
+    if (settings.hidden.miniMode.fullSite){
+        $("body").addClass("ukofea-mini");
+    } else if (settings.hidden.miniMode.forumGames && $(".crumb:last span").text() == "Forum Games and Randomness"){
+        $("body").addClass("ukofea-mini");
+    }
+    
     if (settings.hidden.themeOverload.enabled){
         $("link[rel=stylesheet]").attr("href",function(i,h){return h.replace(/[0-9]+(?=&dir)/,settings.hidden.themeOverload.style)})
     }

@@ -1,3 +1,4 @@
+/*SquareAvatars*/
 body.ukofea-squareAvatars .avatar img,
 body.ukofea-squareAvatars .avatar .img,
 body.ukofea-squareAvatars .avatarCropper{
@@ -7,6 +8,50 @@ body.ukofea-squareAvatars .avatarCropper{
 li.ukofea-firstFetched {
     border-bottom: 10px solid #f0f0f0;
 }
+
+/*MiniMode*/
+body.ukofea-mini .messageUserBlock .extraUserInfo,
+body.ukofea-mini h3.userText em,
+body.ukofea-mini .ribbon,
+body.ukofea-mini .message .signature {
+    display:none
+}
+body.ukofea-mini .message .messageUserInfo a.username {
+    font-size: 11px;
+    line-height: 11px;
+    text-align: center;
+}
+body.ukofea-mini .message .avatar .img,
+body.ukofea-mini .message .avatar img {
+    width:88px;
+    height:88px;
+    background-size:88px;
+}
+body.ukofea-mini .message .messageContent {
+    min-height:0px
+}
+body.ukofea-mini .message .messageInfo,
+body.ukofea-mini #QuickReply {
+    margin-left:120px;
+    float:none;
+}
+body.ukofea-mini .messageUserBlock div.avatarHolder {
+    padding: 2px;
+}
+body.ukofea-mini .messageUserInfo {
+    width: 100px;
+}
+body.ukofea-mini .message .messageMeta{
+    padding:5px;
+    margin:5px -5px;
+    border-top:1px dashed #E1D7FC;
+    font-size:inheret;
+}
+body.ukofea-mini .messageList .message{
+    padding-bottom:10px;
+}
+
+/*AdvIgnore*/
 .message .messageNotices a,
 .message.subIgnored .messageInfo div,
 .message.subIgnored .messageUserInfo,
