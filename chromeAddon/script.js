@@ -234,6 +234,11 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
     }
 });
 
+
+var alertSoundElem = $("<audio>").attr("src","alert.ogg").appendTo("body")[0]
+
+setInterval(checkAll,60*1000*5) //TODO use chrome API insted
+
 localSettings = new BasicSettings({
     standard:{
         "Notification Sounds":true,
@@ -258,6 +263,8 @@ localSettings = new BasicSettings({
             style:5249
         }
     }
+},function(){
+    checkAll()
 })
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -266,7 +273,3 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     })
 });
 
-var alertSoundElem = $("<audio>").attr("src","alert.ogg").appendTo("body")[0]
-
-checkAll()
-setInterval(checkAll,60*1000*5) //TODO use chrome API insted

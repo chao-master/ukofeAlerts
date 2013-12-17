@@ -1,4 +1,4 @@
-function BasicSettings(settings) {
+function BasicSettings(settings,ready) {
     function loop(over, path) {
         var rtn = {};
         $.each(over, function(key, val) {
@@ -12,9 +12,6 @@ function BasicSettings(settings) {
             } else {
                 nval.value = undefined;
                 nval.def = val;
-                chrome.storage.local.get(nval.path,function(res){
-                    nval.value = res[nval.path]!==undefined?res[nval.path]:nval.def = val;
-                })
             }
             rtn[key] = nval;
         })
@@ -22,6 +19,14 @@ function BasicSettings(settings) {
     }
     
     var _s = loop(settings, "");
+    
+    var that = this;
+    chrome.storage.local.get(null,function(res){
+        $.each(res,function(k,v){
+            that.set(k,v,true)
+        })
+        ready()
+    })
     
     function evalPath(path) {
         var pathEl = path.split(".");
