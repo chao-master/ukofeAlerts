@@ -54,6 +54,7 @@ chrome.runtime.sendMessage({
         }
     }
     
+    //Mass Spoiler Togglings
     if (settings.hidden.massSpoilerToggle){
     $("<div class='button'>Show All</div>")
         .css({display:"inline-block","margin-left":"10px"})
@@ -67,10 +68,35 @@ chrome.runtime.sendMessage({
         }).appendTo(".bbmSpoilerBlock>.type");
     }
     
+    //Ignore Notices
     if (settings.hidden.ignoreNotice){
         $(".ignored, .message:has(.messageNotices li:contains('ignoring'))").addClass('subIgnored').removeClass('ignored');
         $(".message .messageNotices li:contains('ignoring'), .messageSimple .messageNotices li:contains('ignoring')").text(function(i,t){return t.replace("this member",$(this).parents(".message, .messageSimple").attr("data-author"))});
         $(".message.subIgnored .messageNotices, .messageSimple .messageNotices li:contains('ignoring')").click(function(){$(this).closest(".message, .messageSimple").toggleClass("subIgnored")});
         $(".bbCodeQuote.subIgnored .attribution").click(function(){$(this).closest(".bbCodeQuote").toggleClass("subIgnored")});
     }
+    
+    //Hash tags
+    if (settings.hidden.hashTags){
+        var HASHTAG = /#\w+/;
+        var COMPTAG = /#\w+|[^#]+|#\W+/g;
+        $(".messageContent *,.signature *").contents().filter(function(){
+            return this.nodeType == Node.TEXT_NODE && HASHTAG.test(this.data);
+        }).each(function(){
+            console.log("Point A")
+            var txt = this.data.match(COMPTAG);
+            console.log("Point B")
+            var rpc = $.map(txt,function(v){
+                if (HASHTAG.test(v)){
+                    console.log("Point Ca")
+                    return $("<a>").attr("href","http://ukofequestria.co.uk/search/search?keywords="+encodeURIComponent(v)).text(v)[0]
+                }
+                console.log("Point Cb")
+                return $(document.createTextNode(v))[0]
+            })
+            console.log(rpc)
+            $(this).replaceWith($(rpc))
+        })
+    }
+    
 });

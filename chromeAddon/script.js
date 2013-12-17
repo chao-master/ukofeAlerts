@@ -259,6 +259,7 @@ localSettings = new BasicSettings({
         massSpoilerToggle:false,
         ignoreNotice:false,
         squareAvatars:false,
+        hashTags:false,
         themeOverload:{
             enabled:false,
             style:5249
