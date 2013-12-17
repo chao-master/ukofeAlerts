@@ -52,7 +52,7 @@ function BasicSettings(settings,ready) {
     this.get = function(path) {
         var lkup = evalPath(path);
         if (lkup.type != "object") {
-            return lkup.value;
+            return lkup.value==undefined?lkup.def:lkup.vale;
         }
         function loop(over) {
             var rtn = {};
@@ -60,7 +60,7 @@ function BasicSettings(settings,ready) {
                 if (v.type == "object") {
                     rtn[k] = loop(v.value)
                 } else {
-                    rtn[k] = v.value
+                    rtn[k] = v.value==undefined?v.def:v.vale
                 }
             })
             return rtn;
@@ -71,7 +71,7 @@ function BasicSettings(settings,ready) {
     this.set = function(path, value,noStore) {
         var aply = evalPath(path);
         if(value==undefined){
-            aply.value = def.value;
+            aply.value = undefined;
         } else {
             switch (aply.type) {
                 case "undefined":
