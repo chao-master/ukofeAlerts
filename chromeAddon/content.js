@@ -80,7 +80,7 @@ chrome.runtime.sendMessage({
     if (settings.hidden.hashTags){
         var HASHTAG = /#\w+/;
         var COMPTAG = /#\w+|[^#]+|#\W+/g;
-        $(".messageContent *,.signature *").contents().filter(function(){
+        $("body *:not(a[href]):not(a[href] *)").contents().filter(function(){
             return this.nodeType == Node.TEXT_NODE && HASHTAG.test(this.data);
         }).each(function(){
             console.log("Point A")

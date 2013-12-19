@@ -152,7 +152,7 @@ function contentPageLoaded(url,lastPage){
             updateBadge()
             remed.remove()
             spinIcon()
-            $("#notifications>section>ul:empty").parent().addClass(".nothing")
+            $("#notifications>section>ul:empty").parent().addClass("nothing")
         }
     }
 }
