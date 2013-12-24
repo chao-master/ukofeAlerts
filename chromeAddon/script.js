@@ -98,6 +98,15 @@ function checkAlerts(c){
                 case "wrote":
                     keep = !alertFilter["Hide Profile Messages"];
                     break;
+                case "liked":
+                    keep = !alertFilter["Hide Likes"];
+                    break;
+                case "started":
+                    keep = !alertFilter["Hide Started Threads"]
+                    break;
+                case "is":
+                    keep = !alertFilter["Hide Follows"]
+                    break;
             }
             if (!keep){return false}
         }
@@ -247,10 +256,13 @@ localSettings = new BasicSettings({
         "Alert Filtering":{
             "Enabled":false,
             "Hide Replies":true,
+            "Hide Likes":false,
             "Hide Quotes":false,
             "Hide Tags":false,
             "Hide Profile Replies":false,
-            "Hide Profile Posts":false
+            "Hide Profile Posts":false,
+            "Hide Started Threads":false,
+            "Hide Follows":false,
         }
     },
     hidden:{
