@@ -1,8 +1,7 @@
 function xfRequestPage(url,data,callback) {
 
     function error(jqXHR,err,b){
-        $("#errors ul").append($("<li>").text(b+" whilst loading "+url));
-        $("#errors").removeClass("nothing")
+        processError(b);
         console.error(jqXHR,err,b);
     }
 
@@ -32,6 +31,11 @@ function processCount(n){
     updateBadge()
 }
 
+function processError(err){
+    $("#errors ul").append($("<li>").text(err+" whilst loading "+url));
+    $("#errors").removeClass("nothing");
+}
+
 function addThread(section,title,link){
     $(section+" ul").append(
         $("<li>").append( $("<a>").text(title).attr("href",link))
@@ -40,6 +44,7 @@ function addThread(section,title,link){
 
 function checkThreadList(url,page,addFunc){
     processing += 1;
+    var localProcessing = 0;
     xfRequestPage(url,{"page":page},function(data,err){
         if (!err){
             var added = 0;
@@ -52,7 +57,7 @@ function checkThreadList(url,page,addFunc){
             }
             processCount(added);
         } else {
-            console.error(err);
+            processError(err);
         }
     });
 }
