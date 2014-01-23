@@ -1,21 +1,21 @@
 function xfRequestPage(url,data,callback) {
-
-    function error(jqXHR,err,b){
-        processError(b);
-        console.error(jqXHR,err,b);
-    }
-
     if (!token){
         fetchToken = true;
         $.post("http://ukofequestria.co.uk",{},function(resp){
             token = $(resp.replace(/<img\b[^>]*>/ig, '')).find("input[name=_xfToken]").attr("value")
             xfRequestPage(url,data,callback)
-        }).fail(error);
+        }).fail(function(jqXHR,err,errMsg){
+            processError(b);
+            console.error(jqXHR,err,errMsg);
+        });
     } else {
         $.extend(data,{"_xfNoRedirect":1,"_xfResponseType":"json","_xfToken":token});
         $.get(url,data,function(resp){
             callback($($.parseHTML(resp.templateHtml.replace(/<img\b[^>]*>/ig, ''))),resp.error);
-        },"json").fail(error);
+        },"json").fail(function(jqXHR,err,errMsg){
+            processError(err,url);
+            console.error(jqXHR,err,errMsg);
+        });
     }
 }
 
@@ -25,22 +25,29 @@ var lastCount = 0;
 var token;
 var fetchToken = false;
 
+/*
+TODO check for bugs, the badge has a habit of not updating proably due to processing count being off
+Maybe we should use a local count inside check threadlist or have a counter for each one
+I dun know I just program =/
+*/
 function processCount(n){
     processing -= 1;
     count += n;
     updateBadge()
 }
 
-function processError(err){
+function processError(err,url){
     $("#errors ul").append($("<li>").text(err+" whilst loading "+url));
     $("#errors").removeClass("nothing");
 }
 
+/* XXX Dont think this is used anymore
 function addThread(section,title,link){
     $(section+" ul").append(
         $("<li>").append( $("<a>").text(title).attr("href",link))
     )
 }
+*/
 
 function checkThreadList(url,page,addFunc){
     processing += 1;
@@ -74,6 +81,8 @@ function checkConversations(){
         return true;
     });
 }
+
+//TODO store alerts locally checking if they have been viewed
 function checkAlerts(c){
     $("#alerts ul").empty();
     $("#alerts").addClass("nothing")
@@ -122,6 +131,7 @@ function checkAlerts(c){
         return true;
     });
 }
+
 function checkWatched(){
     $("#watched ul").empty();
     $("#watched").addClass("nothing")
@@ -151,7 +161,10 @@ function checkAll(){
     checkWatched();
 }
 
-function contentPageLoaded(url,lastPage){
+function contentPageLoaded(url,lastPage,newToken){
+    if (newToken){
+        token = newToken;
+    }
     if (lastPage){
         var s = url.split("/");
         if (s.length < 2){return}
@@ -198,6 +211,7 @@ function spinIcon(speed){
     rFn()
 }
 
+//Might be able to make this more elegent
 function updateBadge(){
     if (count != lastCount){
         if (count){
@@ -205,12 +219,13 @@ function updateBadge(){
         } else {
             chrome.browserAction.setBadgeText({text:""});
         }
-        if (!processing){
+        if (processing <= 0){
             if (lastCount < count && localSettings.get("standard.Notification Sounds")){
                 alertSoundElem.play()
             }
             spinIcon();
-            lastCount = count
+            lastCount = count;
+            processing = 0;
         }
     }
 }
@@ -245,7 +260,7 @@ chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
         checkAll()
     } else if (request.message == "pageLoad"){
         sendResponse(localSettings.get(""));
-        contentPageLoaded(request.url,request.lastPage);
+        contentPageLoaded(request.url,request.lastPage,request.token);
     }
 });
 

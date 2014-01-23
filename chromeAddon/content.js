@@ -1,13 +1,16 @@
 function pageFullyLoaded(){
-        window.location.hash += " ";
-        console.log("page Loaded")
-    }
+    window.location.hash += " ";
+    console.log("page Loaded")
+}
 
-chrome.runtime.sendMessage({
+var message={
     message:"pageLoad",
     url:window.location.pathname,
-    lastPage:$(".postsRemaining").length == 0
-},function(settings){
+    lastPage:$(".postsRemaining").length == 0,
+    token:$("input[name=_xfToken]:first").attr("value")
+}
+
+chrome.runtime.sendMessage(message,function(settings){
     var r=0;
     
     if (settings.hidden.squareAvatars){
