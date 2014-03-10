@@ -1,6 +1,5 @@
 function xfRequestPage(url,data,callback) {
     if (!token){
-        fetchToken = true;
         $.post("http://ukofequestria.co.uk",{},function(resp){
             token = $(resp.replace(/<img\b[^>]*>/ig, '')).find("input[name=_xfToken]").attr("value")
             xfRequestPage(url,data,callback)
@@ -23,7 +22,6 @@ var processing = 0;
 var count = 0;
 var lastCount = 0;
 var token;
-var fetchToken = false;
 
 /*
 TODO check for bugs, the badge has a habit of not updating proably due to processing count being off
@@ -213,20 +211,18 @@ function spinIcon(speed){
 
 //Might be able to make this more elegent
 function updateBadge(){
-    if (count != lastCount){
-        if (count){
-            chrome.browserAction.setBadgeText({text:""+count});
-        } else {
-            chrome.browserAction.setBadgeText({text:""});
+    if (count){
+        chrome.browserAction.setBadgeText({text:""+count});
+    } else {
+        chrome.browserAction.setBadgeText({text:""});
+    }
+    if (processing <= 0){
+        if (lastCount < count && localSettings.get("standard.Notification Sounds")){
+            alertSoundElem.play()
         }
-        if (processing <= 0){
-            if (lastCount < count && localSettings.get("standard.Notification Sounds")){
-                alertSoundElem.play()
-            }
-            spinIcon();
-            lastCount = count;
-            processing = 0;
-        }
+        spinIcon();
+        lastCount = count;
+        processing = 0;
     }
 }
 
