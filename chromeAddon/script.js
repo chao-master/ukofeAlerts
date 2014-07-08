@@ -73,21 +73,29 @@ function checkConversations(){
     checkThreadList("http://ukofequestria.co.uk/conversations",1,function(elem){
         var e = elem.find(".title a.PreviewTooltip");
         $("#conversations ul").append($("<li>").append(
-            e.attr("class","").attr("target","_blank").attr("title",e.text())
+            e.attr("class","targLink").attr("target","_blank").attr("title",e.text())
         ))
         $("#conversations").removeClass("nothing")
         return true;
     });
 }
 
-//TODO store alerts locally checking if they have been viewed
+//TODO store alerts locally checking if they have been viewed (partly done)
+//  Need to have it store alerts over close (do I?)
+//TODO insert alerts in the correct order.
+//TODO keep track of which alerts have been removed from the list so it updates correctlly
 function checkAlerts(c){
-    $("#alerts ul").empty();
-    $("#alerts").addClass("nothing")
+    //$("#alerts ul").empty();
+    //$("#alerts").addClass("nothing")
     checkThreadList("http://ukofequestria.co.uk/account/alerts",1,function(elem){
         var e = elem.find(".alertText h3")
+        var alertId = elem.attr("id")
         e.find("a").attr("target","_blank")
         
+        if ($("#alerts ul li[attr-alertId="+alertId+"]").length > 0){
+            return false;
+        }
+
         var alertFilter = localSettings.get("standard.Alert Filtering");
         if (alertFilter.Enabled) {
             var ce = e.clone();
@@ -124,10 +132,21 @@ function checkAlerts(c){
         }
         
         $("#alerts").removeClass("nothing")
-        $("#alerts ul").append($("<li>").append(e).attr("title",e.text().replace(/\s+/g," ")))
+
+        e.find(".PopupItemLink").attr("class","targLink")
+        $("#alerts ul").append(
+            $("<li>").append(e).attr({
+                "title":e.text().replace(/\s+/g," ").trim(),
+                "attr-alertId":alertId
+            })
+        )
         e.find("*:first-child").unwrap()
         return true;
     });
+
+    if ($("#alerts li").length == 0){
+        $("#alerts").addClass("nothing")
+    }
 }
 
 function checkWatched(){
@@ -140,7 +159,7 @@ function checkWatched(){
             $("#watched").removeClass("nothing")
             var e = elem.find(".PreviewTooltip")
             $("#watched ul").append($("<li>").append(
-                e.attr("class","").attr("target","_blank").attr("title",e.text())
+                e.attr("class","targLink").attr("target","_blank").attr("title",e.text())
             ))
             return true;
         });
@@ -169,7 +188,7 @@ function contentPageLoaded(url,lastPage,newToken){
         var type = s[1];
         var id = s[2].match(/[0-9]+$/)[0]
         var remed = $("li").filter(function(){
-            var t = $(this).find("a").attr("href").split("/");
+            var t = $(this).find(".targLink").attr("href").split("/");
             return t[0] == type && t[1].indexOf(id, t[1].length - id.length) !== -1;
         })
         if(remed.length){
