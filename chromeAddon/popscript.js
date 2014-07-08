@@ -1,10 +1,10 @@
 chrome.runtime.sendMessage({message:"quickLoad"}, function(response) {
     $("#notifications").empty().append(response.html)
     $.each(response.settings.standard,function(k,v){
-        addOption($("#options ul"),k,v,"standard.");
+        addOption($("#options>ul"),k,v,"standard.");
     })
     $.each(response.settings.hidden,function(k,v){
-        addOption($("#experimental ul"),k,v,"hidden.");
+        addOption($("#experimental>ul"),k,v,"hidden.");
     })
     
     $("#toggleOptions").click(function(){
