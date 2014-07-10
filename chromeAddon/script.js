@@ -19,7 +19,6 @@ function xfRequestPage(url,data,callback) {
 }
 
 var processing = 0;
-var count = 0;
 var lastCount = 0;
 var token;
 
@@ -30,7 +29,6 @@ I dun know I just program =/
 */
 function processCount(n){
     processing -= 1;
-    count += n;
     updateBadge()
 }
 
@@ -83,16 +81,23 @@ function checkConversations(){
 //TODO store alerts locally checking if they have been viewed (partly done)
 //  Need to have it store alerts over close (do I?)
 //TODO insert alerts in the correct order.
-//TODO keep track of which alerts have been removed from the list so it updates correctlly
+
+var markedAlerts = [];
 function checkAlerts(c){
     //$("#alerts ul").empty();
     //$("#alerts").addClass("nothing")
+
+    var oldAlerts = markedAlerts
+    markedAlerts = []
+
     checkThreadList("http://ukofequestria.co.uk/account/alerts",1,function(elem){
         var e = elem.find(".alertText h3")
         var alertId = elem.attr("id")
         e.find("a").attr("target","_blank")
         
-        if ($("#alerts ul li[attr-alertId="+alertId+"]").length > 0){
+        var indexInStore = oldAlerts.indexOf(alertId)
+
+        if (indexInStore >= 0){
             return false;
         }
 
@@ -103,34 +108,35 @@ function checkAlerts(c){
             var idenityText = ce.text().match(/\S+/)[0];
             var keep = true;
             switch(idenityText){
-                case "replied":
+                case "replied": //Replies to threads you are following
                     keep = !alertFilter["Hide Replies"];
                     break;
-                case "quoted":
+                case "quoted": //Post made quoting yours
                     keep = !alertFilter["Hide Quotes"];
                     break;
-                case "tagged":
+                case "tagged": //Post made tagging you
                     keep = !alertFilter["Hide Tags"];
                     break;
-                case "commented":
+                case "commented": //Replies to profile messages you've replied to (?)
                     keep = !alertFilter["Hide Profile Replies"];
                     break;
-                case "wrote":
+                case "wrote": //Messages on your profile
                     keep = !alertFilter["Hide Profile Messages"];
                     break;
-                case "liked":
+                case "liked": //A user liked your post
                     keep = !alertFilter["Hide Likes"];
                     break;
-                case "started":
+                case "started": //A thread has been posted in a forum you follow
                     keep = !alertFilter["Hide Started Threads"]
                     break;
-                case "is":
+                case "is": //User is following you
                     keep = !alertFilter["Hide Follows"]
                     break;
             }
             if (!keep){return false}
         }
         
+        markedAlerts.push(alertId)
         $("#alerts").removeClass("nothing")
 
         e.find(".PopupItemLink").attr("class","targLink")
@@ -172,12 +178,12 @@ function checkAll(){
     $("#errors ul").empty();
     $("#errors").addClass("nothing");
     processing = 0;
-    count = 0;
     checkConversations();
     checkAlerts();
     checkWatched();
 }
 
+//TODO fix alerts not being cleared when the apporiate page is opened
 function contentPageLoaded(url,lastPage,newToken){
     if (newToken){
         token = newToken;
@@ -192,7 +198,6 @@ function contentPageLoaded(url,lastPage,newToken){
             return t[0] == type && t[1].indexOf(id, t[1].length - id.length) !== -1;
         })
         if(remed.length){
-            count -= remed.length;
             updateBadge()
             remed.remove()
             spinIcon()
@@ -230,6 +235,7 @@ function spinIcon(speed){
 
 //Might be able to make this more elegent
 function updateBadge(){
+    var count = $("li").length
     if (count){
         chrome.browserAction.setBadgeText({text:""+count});
     } else {
