@@ -3,6 +3,10 @@ function pageFullyLoaded(){
     console.log("page Loaded")
 }
 
+function postoneTillLoad(){
+
+}
+
 var message={
     message:"pageLoad",
     url:window.location.pathname,
@@ -13,6 +17,12 @@ var message={
 chrome.runtime.sendMessage(message,function(settings){
     var r=0;
     
+    if (settings.hidden.disableExternalWarning){
+        $(".externalLink").replaceWith(function(){
+            return $(this).clone(false,false).removeClass("externalLink").removeAttr("target")
+        });
+    }
+
     if (settings.hidden.squareAvatars){
         $("body").addClass("ukofea-squareAvatars");
     }

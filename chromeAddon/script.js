@@ -313,6 +313,7 @@ localSettings = new BasicSettings({
         ignoreNotice:false,
         squareAvatars:false,
         hashTags:false,
+        disableExternalWarning:false,
         themeOverload:{
             enabled:false,
             style:5249
