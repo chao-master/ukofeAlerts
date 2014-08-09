@@ -64,3 +64,14 @@ body.ukofea-mini .messageList .message{
 bbCodeQuote.subIgnored blockquote{
     display:none;
 }
+
+/*HomePanel Peek*/
+.HomePanel>*{
+    -webkit-transition: left 0.5s,bottom 0.5s;
+}
+.HomePanel:active .text {
+    left: -511px;
+}
+.HomePanel:active .quicklinks {
+    bottom: -112px;
+}
